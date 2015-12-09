@@ -1,0 +1,16 @@
+Package: pothole
+Type: Package
+Title: Edmonton Pothole Prediction Model
+Version: 0.0.1
+Date: 2015-12-09
+Author: Steven Mortimer
+Maintainer: Steven Mortimer <reportmort@gmail.com>
+Description: Simple example model that predicts number of potholes filled
+    monthly in Edmonton.
+License: MIT
+LazyData: false
+Depends:
+    R (>= 3.0.2)
+Imports:
+    forecast
+RoxygenNote: 5.0.1

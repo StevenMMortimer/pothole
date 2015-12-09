@@ -1,0 +1,159 @@
+---
+title: "OpenCPU Scoring Application"
+author: "Steve Mortimer"
+date: "December 9, 2015"
+output: 
+  html_document:
+        self_contained: false
+        lib_dir: libs
+---
+
+``` {r global_parms, echo=FALSE, eval=TRUE, warning=FALSE, cache=FALSE}
+
+options(stringsAsFactors=FALSE, scipen=999)
+
+suppressWarnings(suppressPackageStartupMessages(library(rjson)))
+suppressWarnings(suppressPackageStartupMessages(library(plyr)))
+suppressWarnings(suppressPackageStartupMessages(library(forecast)))
+suppressWarnings(suppressPackageStartupMessages(library(knitr)))
+suppressWarnings(suppressPackageStartupMessages(library(ggplot2)))
+suppressWarnings(suppressPackageStartupMessages(library(scales)))
+suppressWarnings(suppressPackageStartupMessages(library(lubridate)))
+knitr::opts_chunk$set(results='asis', echo=FALSE, eval=TRUE, cache=FALSE, message = FALSE, warning = FALSE)
+
+```
+
+# Background
+
+```{r load-historical-data}
+
+  json_data <- rjson::fromJSON(file='http://dashboard.edmonton.ca/resource/i3wp-57z9.json') 
+  formatted_data <- ldply(json_data, .fun = function(x) as.data.frame(x))
+  dat <- as.data.frame(lapply(formatted_data, function(x) type.convert(x, as.is=T)))
+  dat <- dat[order(dat$datetime),]
+  
+```
+
+The city of Edmonton, capital city of Alberta Province in Canada, fills roughly 
+`r comma(round(mean(dat$number_of_potholes)*12,0))` potholes each year. 
+Pothole repair activity varies seasonally and is highly dependent on weather. A time-series model 
+can be created to estimate at certain points in the year how many potholes estimated to be filled.
+
+```{r convert-to-time-series}
+  
+  dat$month_numeric <- match(gsub(' ', '', dat$report_month), month.name)
+  
+  time_series <- ts(data=dat$number_of_potholes, 
+                    start=c(head(dat$report_year,1), head(dat$month_numeric,1)), 
+                    end=c(tail(dat$report_year,1), tail(dat$month_numeric,1)), 
+                    frequency=12)
+  
+```
+
+```{r build-model, echo=FALSE}
+
+  pothole_model <- ets(time_series, lambda=.0001)
+  
+  parameter_types <- c('A'='Additive', 'M'='Multiplicative', 'N'='no')
+  horizon_length <- 24
+
+```
+
+# Time Series Model
+
+Below is a plot showing a `r horizon_length` month forward-looking monthly 
+forecast of potholes filled. The model is an exponential smoothing state 
+space model that automatically selected a model with 
+`r parameter_types[pothole_model$components[1]]` errors, 
+`r parameter_types[pothole_model$components[2]]` trend, 
+`r parameter_types[pothole_model$components[3]]` seasonality, and 
+`r if(pothole_model$components[4]) '' else ' no '` trend damping. A Box-Cox transformation 
+was used with $\lambda$=.0001 to ensure a forecast lower bound that is non-negative. The 
+R code to implement model fitting was:
+
+```{r model-fitting-code, echo=TRUE, eval=FALSE}
+  ets(time_series, lambda=.0001)
+```
+
+```{r plot-model-result, echo=FALSE}
+  
+  
+  f <- forecast(pothole_model, h=horizon_length, level=0.75)
+  dat_plotf <- data.frame(date=c(ymd_hms(dat$datetime), ymd_hms(tail(dat$datetime,1))%m+%months(1:24)), 
+                          observed=c(coredata(time_series), rep(NA, horizon_length)),
+                          forecast=c(rep(NA, length(f$x)), coredata(f$mean)),
+                          lo95=c(rep(NA, length(f$x)), coredata(f$lower)), 
+                          hi95=c(rep(NA, length(f$x)), coredata(f$upper)))
+  
+  suppressWarnings(forecast_plot <- ggplot(data=dat_plotf,aes(x=as.Date(date),y=observed)) +
+                    geom_point() +
+                    geom_line() +
+                    geom_line(aes(y=forecast), col='blue') +
+                    geom_ribbon(aes(ymin=lo95,ymax=hi95),alpha=.25) +
+                    scale_x_date(breaks = date_breaks("years"),
+                                 labels = date_format("%b %Y")) + 
+                    scale_y_continuous(labels=comma, breaks=pretty_breaks(n=10)) + 
+                    xlab("Month") + 
+                    ylab("Potholes Filled\n") + 
+                    ggtitle(paste0('Number of Potholes Filled in Edmonton Canada\n',
+                                   '(Predictions made ', horizon_length, ' Months Forward)\n')) +
+                    theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1)))
+
+  suppressWarnings(plot(forecast_plot))
+  
+```
+
+# Generating Model Forecasts
+
+The pothole package includes a model object: [pothole_model](../../data/pothole_model) and a 
+scoring function: [pothole_predict](../../R/pothole_predict) that predicts the monthly number of potholes
+filled in the city of Edmonton. For more detail the source code that generated 
+the model can be viewed at createmodel.R.
+
+## Predictions using curl
+
+To call the pothole\_predict function with curl 
+using basic [JSON RPC](https://www.opencpu.org/api.html#api-json):
+
+```
+curl https://{your_opencpu_server_address}/pothole/R/pothole_predict/json \
+-H "Content-Type: application/json" \
+-d '{
+      "input" : 
+        [ 
+          {
+            "month":"2016-01-01"
+          }, 
+          {
+            "month":"2016-02-01"
+          }, 
+          {
+            "month":"2016-03-01"
+          } 
+        ]
+    }'
+```
+
+## Batch predictions via .csv
+
+The scoring function was designed to accept json data as well as a .csv file as input. 
+The example below illustrates batch scoring using .csv files for both input and output. 
+The .csv file must contain 1 column for each required scoring parameter 
+[(example data)](../../data/testdata.csv).
+
+```{r results='asis', echo=F}
+  cat('<form role="form">')
+    cat('<div class="form-group">')
+      cat('<img src="spinner.gif" class="spinner" style="display:none;" />')
+      cat('<input class="btn btn-primary btn-lg" type="file" id="csvfile">') 
+      cat('<br>')
+      cat('<a class="btn btn-success btn-lg hide" target="_blank" id="outputcsv">Output CSV</a>')
+    cat('</div>')
+  cat('</form>')
+  cat('</br>')
+  cat('</br>')
+  cat('<script src="jquery.min.js"></script>')
+  cat('<script src="bootstrap.min.js"></script>')
+  cat('<script src="opencpu.js"></script>')
+  cat('<script src="app.js"></script>')
+```
