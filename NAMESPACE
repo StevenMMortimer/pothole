@@ -3,3 +3,7 @@
 export(pothole_model)
 export(pothole_predict)
 importFrom(forecast,forecast)
+importFrom(lubridate,"%m+%")
+importFrom(lubridate,floor_date)
+importFrom(lubridate,ymd)
+importFrom(zoo,coredata)

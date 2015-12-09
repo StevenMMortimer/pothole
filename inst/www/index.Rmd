@@ -1,5 +1,5 @@
 ---
-title: "OpenCPU Scoring Application"
+title: "A Sample OpenCPU Scoring Application"
 author: "Steve Mortimer"
 date: "December 9, 2015"
 output: 

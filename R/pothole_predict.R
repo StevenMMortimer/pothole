@@ -4,10 +4,14 @@
 #' 
 #' @export
 #' @importFrom forecast forecast
+#' @importFrom lubridate floor_date ymd %m+%
+#' @importFrom zoo coredata
 #' @param input data passed on as \code{h} to \code{\link{forecast}}
-#' @examples 
+#' @examples
+#' \dontrun{
 #'    mydata <- data.frame(month='2016-01-01')
 #'    pothole_predict(mydata)
+#' }
 pothole_predict <- function(input){
 
   # load input data (can either be csv file or data	0
@@ -30,6 +34,7 @@ pothole_predict <- function(input){
   max_input_month <- as.Date(max(newdat$month))
   # find the newest month reported
   max_data_month <- as.Date(max(pothole_data$month_as_date))
+  min_data_month <- as.Date(min(pothole_data$month_as_date))
   
   return_dat <- newdat[,'month',drop=F]
 

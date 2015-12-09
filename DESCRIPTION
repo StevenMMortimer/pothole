@@ -7,10 +7,12 @@ Author: Steven Mortimer
 Maintainer: Steven Mortimer <reportmort@gmail.com>
 Description: Simple example model that predicts number of potholes filled
     monthly in Edmonton.
-License: MIT
+License: MIT + file LICENSE
 LazyData: false
 Depends:
     R (>= 3.0.2)
 Imports:
-    forecast
+    forecast,
+    lubridate,
+    zoo
 RoxygenNote: 5.0.1

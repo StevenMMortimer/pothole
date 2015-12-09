@@ -13,7 +13,9 @@ pothole_predict(input)
 Simple forecast model
 }
 \examples{
+\dontrun{
    mydata <- data.frame(month='2016-01-01')
    pothole_predict(mydata)
+}
 }
 
