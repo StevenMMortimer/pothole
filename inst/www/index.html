@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Steve Mortimer" />
+
+
+<title>A Sample OpenCPU Scoring Application</title>
+
+<script src="libs/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.1/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.1/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.1/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="libs/highlight/default.css"
+      type="text/css" />
+<script src="libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div id="header">
+<h1 class="title">A Sample OpenCPU Scoring Application</h1>
+<h4 class="author"><em>Steve Mortimer</em></h4>
+<h4 class="date"><em>December 9, 2015</em></h4>
+</div>
+
+
+<div id="background" class="section level1">
+<h1>Background</h1>
+<p>The city of Edmonton, capital city of Alberta Province in Canada, fills roughly 528,634 potholes each year. Pothole repair activity varies seasonally and is highly dependent on weather. A time-series model can be created to estimate at certain points in the year how many potholes are estimated to be filled.</p>
+</div>
+<div id="time-series-model" class="section level1">
+<h1>Time Series Model</h1>
+<p>Below is a plot showing a 24 month forward-looking monthly forecast of potholes filled. The model is an exponential smoothing state space model that automatically selected a model with Additive errors, no trend, Additive seasonality, and no trend damping. A Box-Cox transformation was used with <span class="math">\(\lambda\)</span>=.0001 to ensure a forecast lower bound that is non-negative. The R code to implement model fitting was:</p>
+<pre class="r"><code>  ets(time_series, lambda=.0001)</code></pre>
+<p><img src="index_files/figure-html/plot-model-result-1.png" title="" alt="" width="672" /></p>
+</div>
+<div id="generating-model-forecasts" class="section level1">
+<h1>Generating Model Forecasts</h1>
+<p>The pothole package includes a model object: <a href="../../data/pothole_model">pothole_model</a> and a scoring function: <a href="../../R/pothole_predict">pothole_predict</a> that predicts the monthly number of potholes filled in the city of Edmonton. For more detail the source code that generated the model can be viewed at createmodel.R.</p>
+<div id="predictions-using-curl" class="section level2">
+<h2>Predictions using curl</h2>
+<p>To call the pothole_predict function with curl using basic <a href="https://www.opencpu.org/api.html#api-json">JSON RPC</a>:</p>
+<pre><code>curl https://{your_opencpu_server_address}/pothole/R/pothole_predict/json \
+-H &quot;Content-Type: application/json&quot; \
+-d &#39;{
+      &quot;input&quot; : 
+        [ 
+          {
+            &quot;month&quot;:&quot;2016-01-01&quot;
+          }, 
+          {
+            &quot;month&quot;:&quot;2016-02-01&quot;
+          }, 
+          {
+            &quot;month&quot;:&quot;2016-03-01&quot;
+          } 
+        ]
+    }&#39;</code></pre>
+</div>
+<div id="batch-predictions-via-.csv" class="section level2">
+<h2>Batch predictions via .csv</h2>
+<p>The scoring function was designed to accept json data as well as a .csv file as input. The example below illustrates batch scoring using .csv files for both input and output. The .csv file must contain 1 column for each required scoring parameter <a href="../../data/testdata.csv">(example data)</a>.</p>
+<form role="form">
+<div class="form-group">
+<img src="spinner.gif" class="spinner" style="display:none;" /><input class="btn btn-primary btn-lg" type="file" id="csvfile"><br><a class="btn btn-success btn-lg hide" target="_blank" id="outputcsv">Output CSV</a>
+</div>
+</form>
+</br></br>
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<script src="opencpu.js"></script>
+<script src="app.js"></script>
+</div>
+</div>
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
