@@ -13,7 +13,7 @@ This package illustrates how to deploy a model for remote scoring/prediction.
     # Score from model deployed on opencpu servers
     curl https://public.opencpu.org/ocpu/github/ReportMort/pothole/R/pothole_predict/json \
       -H "Content-Type: application/json" \
-      -d '{"input" : [ {"year":1914} ]}'
+      -d '{"input" : [ {"month":"2016-01-01"} ]}'
       
     # Score from R using RCurl
     library(RCurl)
@@ -26,7 +26,7 @@ This package illustrates how to deploy a model for remote scoring/prediction.
       
     # Score using Vagrant and Virtualbox
     # First setup virtual machine, copy package to it, ssh into it and install, and run curl against that machine
-    scp -P 2222 /cygdrive/c/users/steven.mortimer/documents/personal-github/beard_0.0.tar.gz vagrant@127.0.0.1:~/.
+    scp -P 2222 /cygdrive/c/users/steven.mortimer/documents/personal-github/pothole_0.0.1.tar.gz vagrant@127.0.0.1:~/.
     vagrant ssh
     sudo R CMD INSTALL pothole.0.0.1.tar.gz --library=/usr/local/lib/R/site-library
     curl http://10.68.12.119/ocpu/library/pothole/R/pothole_predict/json \
