@@ -95,7 +95,7 @@ R code to implement model fitting was:
                     scale_y_continuous(labels=comma, breaks=pretty_breaks(n=10)) + 
                     xlab("Month") + 
                     ylab("Potholes Filled\n") + 
-                    ggtitle(paste0('Number of Potholes Filled in Edmonton Canada\n',
+                    ggtitle(paste0('Number of Potholes Filled in Edmonton, Alberta\n',
                                    '(Predictions made ', horizon_length, ' Months Forward)\n')) +
                     theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1)))
 
@@ -108,7 +108,7 @@ R code to implement model fitting was:
 The pothole package includes a model object: [pothole_model](../data/pothole_model) and a 
 scoring function: [pothole_predict](../R/pothole_predict) that predicts the monthly number of potholes
 filled in the city of Edmonton. For more detail the source code that generated 
-the model can be viewed at [createmodel.R](../pothole/pothole_predict).
+the model can be viewed at [createmodel.R](../createmodel.R).
 
 ## Predictions using curl
 
