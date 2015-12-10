@@ -1,12 +1,12 @@
-$(function(){
-  
+$(document).ready(function () {
+
 	//csv file scoring
-	$("#csvfile").on("change", function loadfile(e){
-		if(!$("#csvfile").val()) return;
+	$("input.file").change(function () {
+		if(!$("input.file").val()) return;
 		$("#outputcsv").addClass("hide").attr("href", "");
 		$(".spinner").show();
 		var req = ocpu.call("pothole_predict", {
-			input : $("#csvfile")[0].files[0]
+			input : $("input.file")[0].files[0]
 		}, function(tmp){
 			$("#outputcsv").removeClass("hide").attr("href", tmp.getLoc() + "R/.val/csv");
 		}).fail(function(){
