@@ -37,7 +37,7 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, eval=TRUE, cache=FALSE, messag
 The city of Edmonton, capital city of Alberta Province in Canada, fills roughly 
 `r comma(round(mean(dat$number_of_potholes)*12,0))` potholes each year. 
 Pothole repair activity varies seasonally and is highly dependent on weather. A time-series model 
-can be created to estimate at certain points in the year how many potholes estimated to be filled.
+can be created to estimate at certain points in the year how many potholes are estimated to be filled.
 
 ```{r convert-to-time-series}
   
