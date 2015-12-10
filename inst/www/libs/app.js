@@ -1,9 +1,8 @@
 $(document).ready(function () {
 	//update the example curl line with the current server
-  document.body.innerHTML = document.body.innerHTML.replace("https://{your_opencpu_server_address}/pothole/R/pothole_predict/json", 
+  document.body.innerHTML = document.body.innerHTML.replace("https://{your_opencpu_server_address}/pothole/R/pothole_predict/json",
 		window.location.href.match(".*/pothole/")[0] + "R/pothole_predict/json"
 	);
-	
 });
 
 function csvScore() {
