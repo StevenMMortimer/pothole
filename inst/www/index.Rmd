@@ -139,7 +139,7 @@ curl https://{your_opencpu_server_address}/pothole/R/pothole_predict/json \
 The scoring function was designed to accept json data as well as a .csv file as input. 
 The example below illustrates batch scoring using .csv files for both input and output. 
 The .csv file must contain 1 column for each required scoring parameter 
-<a href="../../data/testdata.csv">(example dataset)</a>.
+<a href="../pothole/testdata.csv">(example dataset)</a>.
 
 ```{r results='asis', echo=F}
   cat('<form role="form">')
