@@ -108,7 +108,7 @@ R code to implement model fitting was:
 The pothole package includes a model object: [pothole_model](../data/pothole_model) and a 
 scoring function: [pothole_predict](../R/pothole_predict) that predicts the monthly number of potholes
 filled in the city of Edmonton. For more detail the source code that generated 
-the model can be viewed at <a href="../pothole/createmodel.R">.
+the model can be viewed <a href="../pothole/createmodel.R">here</a>.
 
 ## Predictions using curl
 
