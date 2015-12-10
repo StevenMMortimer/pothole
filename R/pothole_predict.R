@@ -53,8 +53,8 @@ pothole_predict <- function(input){
     fc_dat$prediction_type <- ifelse(is.na(fc_dat$forecast), 'HISTORICAL', 'FORECASTED')
     fc_dat$potholes_filled <- ifelse(is.na(fc_dat$forecast), fc_dat$observed, fc_dat$forecast)
     
-    return_dat$prediction_type <- fc_dat[match(newdat$month, fc_dat$month), 'prediction_type']
-    return_dat$potholes_filled <- fc_dat[match(newdat$month, fc_dat$month), 'potholes_filled']
+    return_dat$prediction_type <- fc_dat[match(format(newdat$month, '%Y-%m-%d'), fc_dat$month), 'prediction_type']
+    return_dat$potholes_filled <- fc_dat[match(format(newdat$month, '%Y-%m-%d'), fc_dat$month), 'potholes_filled']
   } else if (max_input_month < min_data_month)  {
     return_dat$prediction_type <- 'HISTORICAL'
     return_dat$potholes_filled <- pothole_data[match(newdat$month, pothole_data$month_as_date), 'number_of_potholes']
