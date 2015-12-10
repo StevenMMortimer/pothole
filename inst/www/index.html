@@ -104,10 +104,10 @@ img {
 </div>
 <div id="batch-predictions-via-.csv" class="section level2">
 <h2>Batch predictions via .csv</h2>
-<p>The scoring function was designed to accept json data as well as a .csv file as input. The example below illustrates batch scoring using .csv files for both input and output. The .csv file must contain 1 column for each required scoring parameter <a href="../data/testdata">(example data)</a>.</p>
+<p>The scoring function was designed to accept json data as well as a .csv file as input. The example below illustrates batch scoring using .csv files for both input and output. The .csv file must contain 1 column for each required scoring parameter <a href="../../data/testdata.csv">(example dataset)</a>.</p>
 <form role="form">
 <div class="form-group">
-<img src="spinner.gif" class="spinner" style="display:none;" /><input class="btn btn-primary btn-lg" type="file" id="csvfile"><br><a class="btn btn-success btn-lg hide" target="_blank" id="outputcsv">Output CSV</a>
+<img src="spinner.gif" class="spinner" style="display:none;" /><input class="btn btn-primary btn-lg" type="file" id="csvfile" onchange="csvScore()"><br><a class="btn btn-success btn-lg hide" target="_blank" id="outputcsv">Output CSV</a>
 </div>
 </form>
 </br></br>
