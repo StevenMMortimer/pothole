@@ -105,8 +105,8 @@ R code to implement model fitting was:
 
 # Generating Model Forecasts
 
-The pothole package includes a model object: [pothole_model](../../data/pothole_model) and a 
-scoring function: [pothole_predict](../../R/pothole_predict) that predicts the monthly number of potholes
+The pothole package includes a model object: [pothole_model](../data/pothole_model) and a 
+scoring function: [pothole_predict](../R/pothole_predict) that predicts the monthly number of potholes
 filled in the city of Edmonton. For more detail the source code that generated 
 the model can be viewed at createmodel.R.
 
@@ -139,7 +139,7 @@ curl https://{your_opencpu_server_address}/pothole/R/pothole_predict/json \
 The scoring function was designed to accept json data as well as a .csv file as input. 
 The example below illustrates batch scoring using .csv files for both input and output. 
 The .csv file must contain 1 column for each required scoring parameter 
-[(example data)](../../data/testdata.csv).
+[(example data)](../data/testdata).
 
 ```{r results='asis', echo=F}
   cat('<form role="form">')
