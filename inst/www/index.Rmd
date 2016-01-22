@@ -1,7 +1,7 @@
 ---
 title: "A Sample OpenCPU Scoring Application"
 author: "Steve Mortimer"
-date: "December 9, 2015"
+date: "February 2016"
 output: 
   html_document:
         self_contained: false
